@@ -1,11 +1,19 @@
 import easyocr
 import numpy as np
 import cv2
+import streamlit as st
+import os
+
+os.environ["TRANSFORMERS_VERBOSITY"] = "error"
+
+@st.cache_resource(show_spinner=False)
+def get_ocr_reader(lang):
+    return easyocr.Reader([lang], gpu=False)
 
 class OCREngine:
     def __init__(self, lang='en'):
         # Initialize EasyOCR
-        self.reader = easyocr.Reader([lang])
+        self.reader = get_ocr_reader(lang)
         
     def preprocess_image(self, image):
         """

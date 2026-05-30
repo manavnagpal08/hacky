@@ -1,12 +1,21 @@
 from transformers import TrOCRProcessor, VisionEncoderDecoderModel
 import torch
 from PIL import Image
+import streamlit as st
+import os
+
+os.environ["TRANSFORMERS_VERBOSITY"] = "error"
+
+@st.cache_resource(show_spinner=False)
+def get_handwriting_models():
+    processor = TrOCRProcessor.from_pretrained("microsoft/trocr-small-handwritten")
+    model = VisionEncoderDecoderModel.from_pretrained("microsoft/trocr-small-handwritten")
+    return processor, model
 
 class HandwritingEngine:
     def __init__(self):
         # We load a small model for hackathon speed, but it uses TrOCR
-        self.processor = TrOCRProcessor.from_pretrained("microsoft/trocr-small-handwritten")
-        self.model = VisionEncoderDecoderModel.from_pretrained("microsoft/trocr-small-handwritten")
+        self.processor, self.model = get_handwriting_models()
         
     def extract_handwriting(self, image):
         """
