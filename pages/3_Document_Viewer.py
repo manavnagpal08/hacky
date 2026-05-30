@@ -54,6 +54,13 @@ with tab2:
             st.markdown(f"**Table {t_idx + 1} (Page {table.get('page')})**")
             # We reconstruct DataFrame from raw_data
             raw = table.get("raw_data", [])
+            if isinstance(raw, str):
+                import json
+                try:
+                    raw = json.loads(raw)
+                except:
+                    raw = []
+                    
             if raw:
                 df = pd.DataFrame(raw[1:], columns=raw[0]) if len(raw) > 1 else pd.DataFrame(raw)
                 st.dataframe(df, use_container_width=True)

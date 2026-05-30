@@ -114,17 +114,24 @@ if uploaded_files:
                 )
                 doc_data["storage_url"] = storage_url
                 
-                # We can't save PIL images or dataframes directly to Firestore. We need to clean them.
-                # Remove non-serializable items before saving to DB
+                import json
                 clean_data = doc_data.copy()
-                clean_data["images_count"] = len(clean_data["images"])
-                del clean_data["images"] # Don't save raw images to DB
+                clean_data["images_count"] = len(clean_data.get("images", []))
+                if "images" in clean_data:
+                    del clean_data["images"] # Don't save raw images to DB
                 
+                # Firestore does not allow nested arrays. 
+                # 1. Remove OCR raw bounding boxes (we don't display them anyway)
+                for page in clean_data.get("pages", []):
+                    if "ocr" in page and "raw_data" in page["ocr"]:
+                        del page["ocr"]["raw_data"]
+
+                # 2. Serialize table raw_data (which is a 2D array) to JSON string
                 clean_tables = []
-                for t in clean_data["tables"]:
+                for t in clean_data.get("tables", []):
                     clean_tables.append({
-                        "page": t["page"],
-                        "raw_data": t["raw_data"]
+                        "page": t.get("page", 1),
+                        "raw_data": json.dumps(t.get("raw_data", []))
                     })
                 clean_data["tables"] = clean_tables
                 
