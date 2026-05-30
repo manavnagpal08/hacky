@@ -1,5 +1,5 @@
 import streamlit as st
-from langchain_openai import OpenAIEmbeddings, ChatOpenAI
+from langchain_google_genai import GoogleGenerativeAIEmbeddings, ChatGoogleGenerativeAI
 from langchain_community.vectorstores import FAISS
 from langchain_text_splitters import RecursiveCharacterTextSplitter
 from langchain.chains import ConversationalRetrievalChain
@@ -7,10 +7,14 @@ from langchain.memory import ConversationBufferMemory
 
 class ChatEngine:
     def __init__(self):
-        if "openai" in st.secrets and "api_key" in st.secrets["openai"]:
-            self.api_key = st.secrets["openai"]["api_key"]
-            self.embeddings = OpenAIEmbeddings(api_key=self.api_key)
-            self.llm = ChatOpenAI(api_key=self.api_key, model="gpt-3.5-turbo", temperature=0)
+        self.embeddings = None
+        self.llm = None
+        self.api_key = None
+        
+        if "gemini" in st.secrets and "api_key" in st.secrets["gemini"]:
+            self.api_key = st.secrets["gemini"]["api_key"]
+            self.embeddings = GoogleGenerativeAIEmbeddings(google_api_key=self.api_key, model="models/embedding-001")
+            self.llm = ChatGoogleGenerativeAI(google_api_key=self.api_key, model="gemini-1.5-flash", temperature=0)
         else:
             self.api_key = None
             self.embeddings = None

@@ -1,16 +1,16 @@
 import json
 import streamlit as st
-from langchain_openai import ChatOpenAI
+from langchain_google_genai import ChatGoogleGenerativeAI
 from langchain_core.prompts import ChatPromptTemplate
 from langchain_core.output_parsers import StrOutputParser
 
 class EntityExtractor:
     def __init__(self):
         # We need an API key
-        if "openai" in st.secrets and "api_key" in st.secrets["openai"]:
-            self.llm = ChatOpenAI(
-                api_key=st.secrets["openai"]["api_key"],
-                model="gpt-3.5-turbo",
+        if "gemini" in st.secrets and "api_key" in st.secrets["gemini"]:
+            self.llm = ChatGoogleGenerativeAI(
+                google_api_key=st.secrets["gemini"]["api_key"],
+                model="gemini-1.5-flash",
                 temperature=0
             )
         else:
@@ -21,7 +21,7 @@ class EntityExtractor:
         Uses LLM to extract structured entities from text.
         """
         if not self.llm:
-            return {"error": "OpenAI API key missing."}
+            return {"error": "Gemini API key missing."}
             
         prompt = ChatPromptTemplate.from_messages([
             ("system", "You are an expert data extraction AI. Extract the following entities from the text: Names, Email Addresses, Phone Numbers, Dates, Addresses, Invoice Numbers, Monetary Amounts, Organizations. Return ONLY a valid JSON object with these keys. If a key is not found, return an empty list for it."),

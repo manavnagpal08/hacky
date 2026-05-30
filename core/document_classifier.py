@@ -1,14 +1,14 @@
 import streamlit as st
-from langchain_openai import ChatOpenAI
+from langchain_google_genai import ChatGoogleGenerativeAI
 from langchain_core.prompts import ChatPromptTemplate
 from langchain_core.output_parsers import StrOutputParser
 
 class DocumentClassifier:
     def __init__(self):
-        if "openai" in st.secrets and "api_key" in st.secrets["openai"]:
-            self.llm = ChatOpenAI(
-                api_key=st.secrets["openai"]["api_key"],
-                model="gpt-3.5-turbo",
+        if "gemini" in st.secrets and "api_key" in st.secrets["gemini"]:
+            self.llm = ChatGoogleGenerativeAI(
+                google_api_key=st.secrets["gemini"]["api_key"],
+                model="gemini-1.5-flash",
                 temperature=0
             )
         else:

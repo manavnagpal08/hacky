@@ -20,7 +20,7 @@ st.write(f"Ask questions about: **{doc.get('filename')}**")
 
 chat_engine = ChatEngine()
 if not chat_engine.api_key:
-    st.error("OpenAI API Key is missing. Please add it to your settings.")
+    st.error("Gemini API Key is missing. Please add it to your settings.")
     st.stop()
 
 # Initialize Chat Chain if not present for this document
