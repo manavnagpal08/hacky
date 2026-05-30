@@ -1,9 +1,6 @@
 streamlit
 firebase-admin
-easyocr
-transformers
-torch
-torchvision
+pytesseract
 opencv-python-headless
 PyMuPDF
 pdfplumber
