@@ -23,10 +23,14 @@ class StorageService:
         
     def upload_local_file(self, local_path, destination_blob_name):
         if not self.bucket: return None
-        blob = self.bucket.blob(destination_blob_name)
-        blob.upload_from_filename(local_path)
-        blob.make_public()
-        return blob.public_url
+        try:
+            blob = self.bucket.blob(destination_blob_name)
+            blob.upload_from_filename(local_path)
+            blob.make_public()
+            return blob.public_url
+        except Exception as e:
+            print(f"Failed to upload to Storage: {e}")
+            return None
 
     def download_file(self, blob_name, destination_file_name):
         """Downloads a file from the bucket."""
